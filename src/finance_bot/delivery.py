@@ -10,7 +10,9 @@ from typing import Any
 from .models import Message
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+def project_root() -> Path:
+    configured = os.environ.get("FINANCE_BOT_ROOT")
+    return Path(configured).resolve() if configured else Path.cwd().resolve()
 
 
 def load_channel_config(raw: str | None = None) -> list[dict[str, Any]]:
@@ -48,7 +50,8 @@ def push_message(
         "target_ids": target_ids,
         "completed_parts": completed_parts,
     }
-    script = PROJECT_ROOT / "scripts" / "push.mjs"
+    root = project_root()
+    script = root / "scripts" / "push.mjs"
     if not script.exists():
         raise FileNotFoundError(script)
 
@@ -67,7 +70,7 @@ def push_message(
                 "--result",
                 str(result_path),
             ],
-            cwd=PROJECT_ROOT,
+            cwd=root,
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,

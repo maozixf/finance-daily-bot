@@ -53,6 +53,7 @@ jobs:
         continue-on-error: true
         env:
           ALL_PUSH_CONFIG: ${{ secrets.ALL_PUSH_CONFIG }}
+          FINANCE_BOT_ROOT: ${{ github.workspace }}
         run: |
           args=(--job "${{ inputs.job_name }}" --state-file state/deliveries.json)
           if [[ -n "${{ inputs.run_date }}" ]]; then

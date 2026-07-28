@@ -1,4 +1,34 @@
 {
   "schema_version": 1,
-  "deliveries": {}
+  "deliveries": {
+    "morning:2026-07-28": {
+      "message_digest": "91c0b0824cd1ca44d87c3e5173fdf347611d3179da2208d1191855a1851f49e5",
+      "channels": {
+        "wecom-main": {
+          "status": "success",
+          "completed_parts": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "parts_total": 4,
+          "updated_at": "2026-07-28T16:41:02.118008+08:00",
+          "error": null
+        },
+        "mail-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-07-28T16:41:02.118008+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2438404",
+      "source_url": "https://www.cls.cn/detail/2438404",
+      "updated_at": "2026-07-28T16:41:02.118008+08:00"
+    }
+  }
 }

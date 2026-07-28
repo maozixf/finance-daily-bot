@@ -3,7 +3,7 @@ name: DXX Two-Week Calendar
 on:
   schedule:
     # Beijing Monday 07:00 (UTC Sunday 23:00)
-    - cron: "0 23 * * 0"
+    - cron: '0 23 * * 0'
   workflow_dispatch:
     inputs:
       run_date:

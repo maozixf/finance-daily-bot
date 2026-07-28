@@ -3,7 +3,7 @@ name: CLS Morning Brief
 on:
   schedule:
     # Beijing Monday-Friday 07:01 (UTC Sunday-Thursday 23:01)
-    - cron: "1 23 * * 0-4"
+    - cron: '1 23 * * 0-4'
   workflow_dispatch:
     inputs:
       run_date:

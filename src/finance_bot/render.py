@@ -11,6 +11,73 @@ from typing import Any
 from .models import ArticleDetail, Message
 
 
+_BODY_TEXT_STYLE = (
+    "margin:0 0 16px;font-size:17px;line-height:1.75;"
+    "color:#222222;word-break:break-word;"
+)
+_HEADING_STYLES = {
+    "h1": "margin:0 0 20px;font-size:24px;line-height:1.4;color:#111111;word-break:break-word;",
+    "h2": "margin:28px 0 14px;font-size:21px;line-height:1.45;color:#111111;word-break:break-word;",
+    "h3": "margin:22px 0 12px;font-size:18px;line-height:1.55;color:#222222;word-break:break-word;",
+    "h4": "margin:20px 0 10px;font-size:17px;line-height:1.6;color:#222222;word-break:break-word;",
+    "h5": "margin:18px 0 8px;font-size:17px;line-height:1.6;color:#222222;word-break:break-word;",
+    "h6": "margin:18px 0 8px;font-size:17px;line-height:1.6;color:#222222;word-break:break-word;",
+}
+_TAG_STYLES = {
+    "p": _BODY_TEXT_STYLE,
+    "ul": "margin:0 0 16px;padding-left:24px;font-size:17px;line-height:1.75;color:#222222;",
+    "ol": "margin:0 0 16px;padding-left:24px;font-size:17px;line-height:1.75;color:#222222;",
+    "li": "margin:0 0 8px;font-size:17px;line-height:1.75;color:#222222;word-break:break-word;",
+    "blockquote": (
+        "margin:0 0 18px;padding:12px 14px;border-left:4px solid #d9d9d9;"
+        "background:#f7f7f7;color:#555555;font-size:17px;line-height:1.75;"
+        "word-break:break-word;"
+    ),
+    "table": (
+        "width:100%;max-width:100%;margin:0 0 18px;border-collapse:collapse;"
+        "table-layout:fixed;"
+    ),
+    "th": (
+        "padding:8px 6px;border:1px solid #dddddd;font-size:15px;line-height:1.6;"
+        "vertical-align:top;word-break:break-word;"
+    ),
+    "td": (
+        "padding:8px 6px;border:1px solid #dddddd;font-size:15px;line-height:1.6;"
+        "vertical-align:top;word-break:break-word;"
+    ),
+}
+
+
+def _styled_tag(tag: str) -> str:
+    style = _HEADING_STYLES.get(tag) or _TAG_STYLES.get(tag)
+    return f'<{tag} style="{style}">' if style else f"<{tag}>"
+
+
+def _email_document(title: str, content: str) -> str:
+    escaped_title = html.escape(title)
+    return (
+        "<!doctype html><html><head>"
+        '<meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">'
+        '<meta name="x-apple-disable-message-reformatting">'
+        f"<title>{escaped_title}</title>"
+        "</head>"
+        '<body style="margin:0;padding:0;width:100%;background:#ffffff;'
+        '-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">'
+        '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
+        'style="width:100%;border-collapse:collapse;background:#ffffff;">'
+        '<tr><td align="center" style="padding:20px 12px;">'
+        '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" '
+        'style="width:100%;max-width:680px;border-collapse:collapse;table-layout:fixed;">'
+        '<tr><td style="padding:0;font-family:-apple-system,BlinkMacSystemFont,'
+        "'Segoe UI','Microsoft YaHei','PingFang SC',Arial,sans-serif;"
+        'font-size:17px;line-height:1.75;color:#222222;word-break:break-word;'
+        '-webkit-text-size-adjust:100%;">'
+        f"{content}"
+        "</td></tr></table></td></tr></table></body></html>"
+    )
+
+
 def _digest(*parts: str) -> str:
     return hashlib.sha256("\x00".join(parts).encode("utf-8")).hexdigest()
 
@@ -150,7 +217,7 @@ class _SafeArticleHtmlParser(HTMLParser):
         self, tag: str, attrs: list[tuple[str, str | None]]
     ) -> None:
         if tag in self.ALLOWED:
-            self.parts.append(f"<{tag}>")
+            self.parts.append(_styled_tag(tag))
         elif tag == "img":
             attributes = dict(attrs)
             src = str(attributes.get("src") or "")
@@ -160,14 +227,19 @@ class _SafeArticleHtmlParser(HTMLParser):
                 alt = str(attributes.get("alt") or "正文图片").strip() or "正文图片"
                 self.parts.append(
                     f'<img src="{html.escape(src, quote=True)}" '
-                    f'alt="{html.escape(alt, quote=True)}" />'
+                    f'alt="{html.escape(alt, quote=True)}" '
+                    'style="display:block;width:100%;max-width:100%;height:auto;'
+                    'margin:12px auto;border:0;" />'
                 )
         elif tag == "a":
             href = str(dict(attrs).get("href") or "")
             allowed = href.startswith("https://")
             self.links.append(allowed)
             if allowed:
-                self.parts.append(f'<a href="{html.escape(href, quote=True)}">')
+                self.parts.append(
+                    f'<a href="{html.escape(href, quote=True)}" '
+                    'style="color:#1677ff;text-decoration:underline;word-break:break-all;">'
+                )
 
     def handle_endtag(self, tag: str) -> None:
         if tag in self.ALLOWED:
@@ -255,38 +327,40 @@ def render_article(
             )
         )
 
-    html_parts = [
-        f"<h1>{html.escape(headline)}</h1>",
-    ]
+    html_parts = [f'{_styled_tag("h1")}{html.escape(headline)}</h1>']
     if article.brief.strip():
         html_parts.append(
-            "<h3>摘要</h3><blockquote>"
+            f'{_styled_tag("h3")}摘要</h3>{_styled_tag("blockquote")}'
             + html.escape(article.brief).replace("\n", "<br />")
             + "</blockquote>"
         )
     if article.audio_url:
         html_parts.append(
-            f'<p>音频链接：<a href="{html.escape(article.audio_url, quote=True)}">点击播放</a></p>'
+            f'{_styled_tag("p")}音频链接：<a href="{html.escape(article.audio_url, quote=True)}" '
+            'style="color:#1677ff;text-decoration:underline;word-break:break-all;">点击播放</a></p>'
         )
     if original_html:
         html_parts.append(original_html)
     html_parts.append("<hr />")
     html_parts.append(
-        f'<p>原文链接：<a href="{html.escape(article.url, quote=True)}">财联社原文</a></p>'
+        f'{_styled_tag("p")}原文链接：<a href="{html.escape(article.url, quote=True)}" '
+        'style="color:#1677ff;text-decoration:underline;word-break:break-all;">财联社原文</a></p>'
     )
     if today_hot:
-        html_parts.append(f"<hr /><h2>{html.escape(date_text)} · 今日热点</h2>")
+        html_parts.append(
+            f'<hr />{_styled_tag("h2")}{html.escape(date_text)} · 今日热点</h2>'
+        )
         html_parts.extend(
-            f"<h3>{index}. "
+            f'{_styled_tag("h3")}{index}. '
             + html.escape(str(item.get("title", "")))
             + "（热度值："
             + html.escape(str(item.get("heat_raw", "")))
-            + "）</h3><p>关键词：<strong>"
+            + f'）</h3>{_styled_tag("p")}关键词：<strong>'
             + html.escape(str(item.get("keyword", "")))
             + "</strong></p>"
             for index, item in enumerate(today_hot, start=1)
         )
-    html_body = "".join(html_parts)
+    html_body = _email_document(headline, "".join(html_parts))
     key = f"{feed}:{target_date.isoformat()}"
     return Message(
         key=key,
@@ -320,13 +394,17 @@ def render_calendar(
             f"## {day}\n\n" + "\n".join(f"- {event}" for event in events)
         )
         html_sections.append(
-            f"<h2>{html.escape(day)}</h2><ul>"
-            + "".join(f"<li>{html.escape(event)}</li>" for event in events)
+            f'{_styled_tag("h2")}{html.escape(day)}</h2>{_styled_tag("ul")}'
+            + "".join(
+                f'{_styled_tag("li")}{html.escape(event)}</li>' for event in events
+            )
             + "</ul>"
         )
     text = title + "\n\n" + "\n\n".join(text_sections)
     markdown = f"# {title}\n\n" + "\n\n".join(markdown_sections)
-    html_body = f"<h1>{html.escape(title)}</h1>" + "".join(html_sections)
+    html_body = _email_document(
+        title, f'{_styled_tag("h1")}{html.escape(title)}</h1>' + "".join(html_sections)
+    )
     return Message(
         key=f"weekly:{start.isoformat()}",
         feed="weekly",

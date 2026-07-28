@@ -33,6 +33,10 @@ class RenderTests(unittest.TestCase):
         )
         self.assertIn("![走势图](https://example/body.png)", message.markdown)
         self.assertIn('<img src="https://example/body.png"', message.html)
+        self.assertIn('name="viewport"', message.html)
+        self.assertIn("-webkit-text-size-adjust:100%", message.html)
+        self.assertIn("max-width:100%;height:auto", message.html)
+        self.assertIn("font-size:17px", message.html)
         self.assertNotIn("https://example/cover.jpg", message.markdown)
         self.assertIn("**市场表现**", message.markdown)
         self.assertIn("正文第一段", message.text)
@@ -64,6 +68,8 @@ class RenderTests(unittest.TestCase):
             message.markdown.index("原文第一项"),
             message.markdown.index("原文第二项"),
         )
+        self.assertIn('name="viewport"', message.html)
+        self.assertIn("max-width:680px", message.html)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,15 @@
+{
+  "name": "finance-daily-bot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "python -m unittest discover -s tests -v"
+  },
+  "dependencies": {
+    "all-pusher-api": "^1.5.2"
+  },
+  "overrides": {
+    "nodemailer": "9.0.3"
+  }
+}

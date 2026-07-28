@@ -1,0 +1,16 @@
+{
+  "channels": [
+    {
+      "id": "dingtalk-main",
+      "name": "DingTalk",
+      "format": "markdown",
+      "max_length": 12000,
+      "config": {
+        "key": {
+          "token": "replace-with-access-token",
+          "secret": "replace-with-signing-secret"
+        }
+      }
+    }
+  ]
+}

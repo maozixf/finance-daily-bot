@@ -1,0 +1,39 @@
+name: DXX Two-Week Calendar
+
+on:
+  schedule:
+    # Beijing Monday 07:00 (UTC Sunday 23:00)
+    - cron: "0 23 * * 0"
+  workflow_dispatch:
+    inputs:
+      run_date:
+        description: "A Beijing date in the target week (YYYY-MM-DD)"
+        required: false
+        type: string
+      dry_run:
+        description: "Render without sending"
+        required: false
+        default: true
+        type: boolean
+      force:
+        description: "Ignore successful delivery state"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finance-daily-bot-state
+  cancel-in-progress: false
+
+jobs:
+  run:
+    uses: ./.github/workflows/_run.yml
+    with:
+      job_name: weekly
+      run_date: ${{ inputs.run_date || '' }}
+      dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+      force: ${{ github.event_name == 'workflow_dispatch' && inputs.force || false }}
+    secrets: inherit

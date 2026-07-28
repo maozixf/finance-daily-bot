@@ -1,0 +1,83 @@
+name: Finance Bot Runner
+
+on:
+  workflow_call:
+    inputs:
+      job_name:
+        required: true
+        type: string
+      run_date:
+        required: false
+        default: ""
+        type: string
+      dry_run:
+        required: false
+        default: false
+        type: boolean
+      force:
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      ALL_PUSH_CONFIG:
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          python -m pip install .
+          npm ci
+
+      - name: Run delivery job
+        id: delivery
+        continue-on-error: true
+        env:
+          ALL_PUSH_CONFIG: ${{ secrets.ALL_PUSH_CONFIG }}
+        run: |
+          args=(--job "${{ inputs.job_name }}" --state-file state/deliveries.json)
+          if [[ -n "${{ inputs.run_date }}" ]]; then
+            args+=(--date "${{ inputs.run_date }}")
+          fi
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            args+=(--dry-run)
+          fi
+          if [[ "${{ inputs.force }}" == "true" ]]; then
+            args+=(--force)
+          fi
+          python -m finance_bot "${args[@]}"
+
+      - name: Commit delivery state
+        if: ${{ always() && !inputs.dry_run }}
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add state/deliveries.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update finance bot state [skip ci]"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Propagate delivery failure
+        if: ${{ steps.delivery.outcome == 'failure' }}
+        run: exit 1

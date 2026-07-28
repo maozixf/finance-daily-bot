@@ -31,7 +31,7 @@
       "updated_at": "2026-07-28T16:41:02.118008+08:00"
     },
     "close:2026-07-28": {
-      "message_digest": "2da1d24141003e3770ca67d8f0a47eedaf4691578d65a7af4453937b8456b01c",
+      "message_digest": "14d1d8f502809811f27f78adaa5fd478553b2fdeaefec02284c194f2e5f6dd7a",
       "channels": {
         "wecom-main": {
           "status": "success",
@@ -42,7 +42,7 @@
             3
           ],
           "parts_total": 4,
-          "updated_at": "2026-07-28T17:34:10.686285+08:00",
+          "updated_at": "2026-07-28T17:46:40.963232+08:00",
           "error": null
         },
         "mail-main": {
@@ -51,13 +51,13 @@
             0
           ],
           "parts_total": 1,
-          "updated_at": "2026-07-28T17:34:10.686285+08:00",
+          "updated_at": "2026-07-28T17:46:40.963232+08:00",
           "error": null
         }
       },
       "source_id": "2439030",
       "source_url": "https://www.cls.cn/detail/2439030",
-      "updated_at": "2026-07-28T17:34:10.686285+08:00"
+      "updated_at": "2026-07-28T17:46:40.963232+08:00"
     }
   }
 }

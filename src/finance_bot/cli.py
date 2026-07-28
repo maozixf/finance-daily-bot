@@ -18,7 +18,9 @@ def _parse_date(value: str) -> date:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="财联社 + DXX 财经定时推送机器人")
     parser.add_argument(
-        "--job", required=True, choices=("morning", "close", "weekly", "weekend")
+        "--job",
+        required=True,
+        choices=("morning", "focus", "close", "weekly", "weekend"),
     )
     parser.add_argument("--date", type=_parse_date, help="北京时间日期，默认今天")
     parser.add_argument(

@@ -1,11 +1,6 @@
-name: CLS Focus Review
+name: CLS Daily Market Review (Manual Only)
 
 on:
-  schedule:
-    # Beijing Monday-Friday 17:20, 17:35, 17:50
-    - cron: "20,35,50 9 * * 1-5"
-    # Beijing Monday-Friday 18:10, 18:30 fallback
-    - cron: "10,30 10 * * 1-5"
   workflow_dispatch:
     inputs:
       run_date:
@@ -34,8 +29,8 @@ jobs:
   run:
     uses: ./.github/workflows/_run.yml
     with:
-      job_name: focus
+      job_name: close
       run_date: ${{ inputs.run_date || '' }}
-      dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
-      force: ${{ github.event_name == 'workflow_dispatch' && inputs.force || false }}
+      dry_run: ${{ inputs.dry_run }}
+      force: ${{ inputs.force }}
     secrets: inherit

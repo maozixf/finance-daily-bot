@@ -8,17 +8,19 @@
 | Workflow | 北京时间 | 内容 |
 |---|---:|---|
 | `morning.yml` | 工作日 07:01 | 财联社有声早报标题、摘要、正文、音频和原文链接 |
-| `close.yml` | 工作日 16:50、17:03、17:10、17:30；18:30 兜底 | 财联社每日收评 + DXX 今日热点 |
+| `close.yml` | 工作日 17:20、17:35、17:50、18:10；18:30 兜底 | 财联社焦点复盘 + DXX 今日热点 |
+| `daily-review.yml` | 不设定时，仅支持手动运行 | 财联社每日收评 + DXX 今日热点（保留但不自动推送） |
 | `weekly.yml` | 周一 07:00 | DXX 本周及下周 14 天财经日历 |
 | `weekend.yml` | 每天 15:50、16:20、16:50、17:20、17:55；18:30 兜底 | 财联社周末/节假日要闻汇总，当天文章及文章 ID 去重 |
 
 财联社栏目：
 
 - 有声早报：<https://www.cls.cn/subject/1151>
-- 每日收评：<https://www.cls.cn/subject/1139>
+- 焦点复盘（自动）：<https://www.cls.cn/subject/1135>
+- 每日收评（仅手动）：<https://www.cls.cn/subject/1139>
 - 周末要闻汇总：<https://www.cls.cn/subject/12471>
 
-所有日期按 `Asia/Shanghai` 解释。收评和周末汇总只接受发布日期为当天的文章。
+所有日期按 `Asia/Shanghai` 解释。焦点复盘、每日收评和周末汇总只接受发布日期为当天的文章。
 状态键为 `栏目 + 北京日期`，成功渠道当天不会再次推送；窗口内后续 Actions 会立即退出。
 
 ## 部署
@@ -58,7 +60,7 @@
 - 不推送栏目封面或文章封面；正文内嵌图片按原位置保留。
 - 保留财联社原文的段落、小标题、列表、加粗和链接结构。
 - 主标题使用 `日期 · 文章标题`，随后依次展示摘要、正文、音频链接和原文链接。
-- 每日收评末尾附加当天全部 DXX 今日热点，不做条数截断。
+- 焦点复盘和手动每日收评末尾附加当天全部 DXX 今日热点，不做条数截断。
 - 每条热点独立展示标题、关键词和原始热度值。
 - Telegram/QQ 默认按 3500 字符拆分，其他文本渠道默认按 12000 字符拆分。
 - 每个分段会单独记录成功状态，重试时跳过已经成功的分段。
@@ -70,6 +72,7 @@ python -m pip install -e .
 npm install
 
 python -m finance_bot --job morning --date 2026-07-28 --dry-run
+python -m finance_bot --job focus --date 2026-07-28 --dry-run
 python -m finance_bot --job close --date 2026-07-27 --dry-run
 python -m finance_bot --job weekly --date 2026-07-28 --dry-run
 python -m finance_bot --job weekend --date 2026-07-26 --dry-run

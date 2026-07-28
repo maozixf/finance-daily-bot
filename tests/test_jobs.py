@@ -10,6 +10,12 @@ from finance_bot.models import Message
 
 
 class JobTests(unittest.TestCase):
+    def test_subject_mapping_keeps_manual_review_and_activates_focus_review(self):
+        from finance_bot.jobs import SUBJECTS
+
+        self.assertEqual(SUBJECTS["focus"], 1135)
+        self.assertEqual(SUBJECTS["close"], 1139)
+
     def test_completed_day_stops_before_fetch(self):
         with tempfile.TemporaryDirectory() as directory:
             state_path = Path(directory) / "state.json"

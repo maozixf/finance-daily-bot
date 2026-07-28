@@ -16,6 +16,8 @@ from .state import DeliveryState
 BEIJING_TZ = ZoneInfo("Asia/Shanghai")
 SUBJECTS = {
     "morning": 1151,
+    "focus": 1135,
+    # Retained for manual use only; no scheduled workflow calls this job.
     "close": 1139,
     "weekend": 12471,
 }
@@ -35,7 +37,7 @@ def build_message(job: str, target_date: date) -> Message | None:
         return None
     article = cls_client.fetch_detail(summary)
     today_hot = None
-    if job == "close":
+    if job in {"focus", "close"}:
         today_hot = DxxClient().today_hot(target_date)
         if not today_hot:
             raise RuntimeError(f"DXX {target_date.isoformat()} 今日热点为空，停止推送")

@@ -2,10 +2,9 @@ name: CLS Focus Review
 
 on:
   schedule:
-    # Beijing Monday-Friday 17:20, 17:35, 17:50
-    - cron: '20,35,50 9 * * 1-5'
-    # Beijing Monday-Friday 18:10, 18:30 fallback
-    - cron: '10,30 10 * * 1-5'
+    # Backup only: Beijing Monday-Friday 18:30 (UTC 10:30).
+    # The external cron service owns the timely retry windows.
+    - cron: '30 10 * * 1-5'
   workflow_dispatch:
     inputs:
       run_date:

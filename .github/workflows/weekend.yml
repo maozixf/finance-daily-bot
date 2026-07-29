@@ -2,13 +2,8 @@ name: CLS Weekend Digest
 
 on:
   schedule:
-    # Beijing daily 15:50
-    - cron: '50 7 * * *'
-    # Beijing daily 16:20, 16:50
-    - cron: '20,50 8 * * *'
-    # Beijing daily 17:20, 17:55
-    - cron: '20,55 9 * * *'
-    # Beijing daily 18:30 fallback
+    # Backup only: Beijing daily 18:30 (UTC 10:30).
+    # The external cron service owns the timely retry windows.
     - cron: '30 10 * * *'
   workflow_dispatch:
     inputs:

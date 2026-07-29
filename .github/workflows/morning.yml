@@ -2,8 +2,9 @@ name: CLS Morning Brief
 
 on:
   schedule:
-    # Beijing Monday-Friday 07:01 (UTC Sunday-Thursday 23:01)
-    - cron: '1 23 * * 0-4'
+    # Backup only: Beijing Monday-Friday 07:30 (UTC Sunday-Thursday 23:30).
+    # The external cron service owns the timely retry windows.
+    - cron: '30 23 * * 0-4'
   workflow_dispatch:
     inputs:
       run_date:

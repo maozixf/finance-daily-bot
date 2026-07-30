@@ -285,13 +285,14 @@ def render_article(
     display_title = (
         "连板个股复盘" if feed == "limit_review" else article.title.strip()
     )
+    show_brief = feed not in {"pre_market", "limit_review"}
     headline = f"{date_text} · {display_title}"
     original_text, original_markdown, original_html = _render_original(
         article.content_html
     )
 
     sections = [headline]
-    if article.brief.strip():
+    if show_brief and article.brief.strip():
         sections.append("摘要\n" + article.brief.strip())
     if article.audio_url:
         sections.append(f"音频链接：{article.audio_url}")
@@ -335,7 +336,7 @@ def render_article(
     text = "\n\n".join(sections)
 
     markdown_sections = [f"# {headline}"]
-    if article.brief.strip():
+    if show_brief and article.brief.strip():
         quoted_brief = "\n> ".join(article.brief.strip().splitlines())
         markdown_sections.append(f"### 摘要\n\n> {quoted_brief}")
     if article.audio_url:
@@ -383,7 +384,7 @@ def render_article(
         )
 
     html_parts = [f'{_styled_tag("h1")}{html.escape(headline)}</h1>']
-    if article.brief.strip():
+    if show_brief and article.brief.strip():
         html_parts.append(
             f'{_styled_tag("h3")}摘要</h3>{_styled_tag("blockquote")}'
             + html.escape(article.brief).replace("\n", "<br />")

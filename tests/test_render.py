@@ -89,7 +89,7 @@ class RenderTests(unittest.TestCase):
         self.assertIn('name="viewport"', message.html)
         self.assertIn("max-width:680px", message.html)
 
-    def test_limit_review_uses_normalized_title(self):
+    def test_limit_review_uses_normalized_title_and_omits_brief(self):
         article = ArticleDetail(
             article_id="review-1",
             subject_id=0,
@@ -103,11 +103,42 @@ class RenderTests(unittest.TestCase):
             cover_image=None,
             url="https://www.jiuyangongshe.com/a/review-1",
             source_label="韭研公社原文",
+            content_html="<p>连板复盘正文</p>",
         )
         message = render_article("limit_review", date(2026, 7, 29), article)
         self.assertEqual(message.title, "2026-07-29 · 连板个股复盘")
         self.assertIn("# 2026-07-29 · 连板个股复盘", message.markdown)
         self.assertNotIn("2026 年 7 月 29 日", message.markdown)
+        self.assertNotIn("摘要", message.text)
+        self.assertNotIn("摘要", message.markdown)
+        self.assertNotIn("摘要", message.html)
+        self.assertIn("连板复盘正文", message.text)
+        self.assertIn("连板复盘正文", message.markdown)
+        self.assertIn("连板复盘正文", message.html)
+
+    def test_pre_market_omits_brief_and_keeps_article_body(self):
+        article = ArticleDetail(
+            article_id="pre-market-1",
+            subject_id=0,
+            subject_name="盘前纪要",
+            title="盘前纪要",
+            brief="不应输出的摘要",
+            author="韭研作者",
+            published_at=datetime(
+                2026, 7, 29, 8, tzinfo=ZoneInfo("Asia/Shanghai")
+            ),
+            cover_image=None,
+            url="https://www.jiuyangongshe.com/a/pre-market-1",
+            source_label="韭研公社原文",
+            content_html="<p>盘前纪要正文</p>",
+        )
+        message = render_article("pre_market", date(2026, 7, 29), article)
+        self.assertNotIn("不应输出的摘要", message.text)
+        self.assertNotIn("不应输出的摘要", message.markdown)
+        self.assertNotIn("不应输出的摘要", message.html)
+        self.assertIn("盘前纪要正文", message.text)
+        self.assertIn("盘前纪要正文", message.markdown)
+        self.assertIn("盘前纪要正文", message.html)
 
     def test_today_hot_renders_every_item(self):
         message = render_today_hot(

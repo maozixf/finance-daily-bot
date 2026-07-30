@@ -15,6 +15,7 @@ class ArticleSummary:
     published_at: datetime
     cover_image: str | None
     url: str
+    source_label: str = "原文"
 
 
 @dataclass(frozen=True)

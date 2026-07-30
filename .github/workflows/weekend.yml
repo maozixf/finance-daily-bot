@@ -1,10 +1,6 @@
 name: CLS Weekend Digest
 
 on:
-  schedule:
-    # Backup only: Beijing daily 18:30 (UTC 10:30).
-    # The external cron service owns the timely retry windows.
-    - cron: '30 10 * * *'
   workflow_dispatch:
     inputs:
       run_date:

@@ -20,7 +20,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--job",
         required=True,
-        choices=("morning", "focus", "close", "weekly", "weekend"),
+        choices=(
+            "morning_scan",
+            "close_scan",
+            "pre_market",
+            "limit_review",
+            "today_hot",
+            "morning",
+            "focus",
+            "close",
+            "weekly",
+            "weekend",
+        ),
     )
     parser.add_argument("--date", type=_parse_date, help="北京时间日期，默认今天")
     parser.add_argument(

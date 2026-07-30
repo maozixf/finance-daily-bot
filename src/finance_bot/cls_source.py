@@ -85,6 +85,7 @@ def _article_summary(raw: dict[str, Any], subject_id: int, subject_name: str) ->
         published_at=datetime.fromtimestamp(timestamp, ZoneInfo(BEIJING_TZ_NAME)),
         cover_image=_normalize_url(raw.get("article_img")),
         url=f"{CLS_BASE_URL}/detail/{article_id}",
+        source_label="财联社原文",
     )
 
 

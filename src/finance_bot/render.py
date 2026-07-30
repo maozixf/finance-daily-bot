@@ -281,7 +281,10 @@ def render_article(
     today_hot: list[dict[str, Any]] | None = None,
 ) -> Message:
     date_text = target_date.isoformat()
-    headline = f"{date_text} · {article.title}"
+    display_title = (
+        "连板个股复盘" if feed == "limit_review" else article.title.strip()
+    )
+    headline = f"{date_text} · {display_title}"
     original_text, original_markdown, original_html = _render_original(
         article.content_html
     )
@@ -315,7 +318,11 @@ def render_article(
     if original_markdown:
         markdown_sections.append(original_markdown)
     markdown = "\n\n".join(markdown_sections)
-    markdown += "\n\n---\n\n" + f"原文链接：[财联社原文]({article.url})"
+    source_label = article.source_label or "原文"
+    markdown += (
+        "\n\n---\n\n"
+        + f"原文链接：[{html.escape(source_label)}]({article.url})"
+    )
     if today_hot:
         markdown += "\n\n---\n\n" + (
             f"## {date_text} · 今日热点\n\n"
@@ -344,7 +351,8 @@ def render_article(
     html_parts.append("<hr />")
     html_parts.append(
         f'{_styled_tag("p")}原文链接：<a href="{html.escape(article.url, quote=True)}" '
-        'style="color:#1677ff;text-decoration:underline;word-break:break-all;">财联社原文</a></p>'
+        'style="color:#1677ff;text-decoration:underline;word-break:break-all;">'
+        f"{html.escape(source_label)}</a></p>"
     )
     if today_hot:
         html_parts.append(
@@ -420,4 +428,49 @@ def render_calendar(
             "end_date": end.isoformat(),
             "digest": _digest(text, markdown, html_body),
         },
+    )
+
+
+def render_today_hot(target_date: date, items: list[dict[str, Any]]) -> Message:
+    date_text = target_date.isoformat()
+    title = f"{date_text} · 今日热点"
+    text_items = [
+        f"{index}. {item.get('title', '')}"
+        f"（热度值：{item.get('heat_raw', '')}）\n"
+        f"   关键词：{item.get('keyword', '')}"
+        for index, item in enumerate(items, start=1)
+    ]
+    markdown_items = [
+        f"## {index}. {item.get('title', '')}"
+        f"（热度值：{item.get('heat_raw', '')}）\n\n"
+        f"关键词：**{item.get('keyword', '')}**"
+        for index, item in enumerate(items, start=1)
+    ]
+    html_items = [
+        f'{_styled_tag("h2")}{index}. '
+        + html.escape(str(item.get("title", "")))
+        + "（热度值："
+        + html.escape(str(item.get("heat_raw", "")))
+        + f'）</h2>{_styled_tag("p")}关键词：<strong>'
+        + html.escape(str(item.get("keyword", "")))
+        + "</strong></p>"
+        for index, item in enumerate(items, start=1)
+    ]
+    text = title + "\n\n" + "\n\n".join(text_items)
+    markdown = f"# {title}\n\n" + "\n\n".join(markdown_items)
+    html_body = _email_document(
+        title,
+        f'{_styled_tag("h1")}{html.escape(title)}</h1>' + "".join(html_items),
+    )
+    return Message(
+        key=f"today_hot:{date_text}",
+        feed="today_hot",
+        date_key=date_text,
+        source_id=f"dxx-today-hot:{date_text}",
+        source_url="https://duanxianxia.com/web/hotnews/iframe",
+        title=title,
+        text=text,
+        markdown=markdown,
+        html=html_body,
+        metadata={"digest": _digest(text, markdown, html_body)},
     )

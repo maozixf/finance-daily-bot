@@ -1,12 +1,17 @@
-name: CLS Morning Brief
+name: Morning Market Scan
 
 on:
-  schedule:
-    # Backup only: Beijing Monday-Friday 07:30 (UTC Sunday-Thursday 23:30).
-    # The external cron service owns the timely retry windows.
-    - cron: '30 23 * * 0-4'
   workflow_dispatch:
     inputs:
+      job_name:
+        description: "Automatic CLS + JYS scan or one selected source"
+        required: false
+        default: morning_scan
+        type: choice
+        options:
+          - morning_scan
+          - morning
+          - pre_market
       run_date:
         description: "Beijing date (YYYY-MM-DD); empty means today"
         required: false
@@ -33,7 +38,7 @@ jobs:
   run:
     uses: ./.github/workflows/_run.yml
     with:
-      job_name: morning
+      job_name: ${{ inputs.job_name || 'morning_scan' }}
       run_date: ${{ inputs.run_date || '' }}
       dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
       force: ${{ github.event_name == 'workflow_dispatch' && inputs.force || false }}

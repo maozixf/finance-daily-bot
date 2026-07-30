@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "finance-daily-bot"
 version = "0.1.0"
-description = "Scheduled CLS and DXX finance brief delivery bot"
+description = "Scheduled CLS, JYS and DXX finance brief delivery bot"
 requires-python = ">=3.11"
 dependencies = []
 

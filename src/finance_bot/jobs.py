@@ -8,8 +8,9 @@ from zoneinfo import ZoneInfo
 from .cls_source import ClsClient
 from .delivery import load_channel_config, push_message
 from .dxx_source import DxxClient
+from .jys_source import JysClient
 from .models import Message
-from .render import render_article, render_calendar
+from .render import render_article, render_calendar, render_today_hot
 from .state import DeliveryState
 
 
@@ -21,14 +22,60 @@ SUBJECTS = {
     "close": 1139,
     "weekend": 12471,
 }
+JYS_JOBS = {
+    "pre_market": {
+        "user_id": "4df747be1bf143a998171ef03559b517",
+        "author": "盘前纪要",
+        "subject_name": "盘前纪要",
+        "title_terms": ("盘前纪要",),
+    },
+    "limit_review": {
+        "user_id": "276f83dafc624053b4e6a136d3a108f4",
+        "author": "股海里扎猛子",
+        "subject_name": "连板复盘",
+        "title_terms": ("连板", "复盘"),
+    },
+}
+GROUPS = {
+    "morning_scan": ("morning", "pre_market"),
+    "close_scan": ("focus", "limit_review"),
+}
 
 
 def build_message(job: str, target_date: date) -> Message | None:
+    if job == "today_hot":
+        items = DxxClient().today_hot(target_date)
+        if not items:
+            return None
+        return render_today_hot(target_date, items)
+
     if job == "weekly":
         start, end, items = DxxClient().two_week_calendar(target_date)
         if not items:
             return None
         return render_calendar(start, end, items)
+
+    if job in JYS_JOBS:
+        spec = JYS_JOBS[job]
+        client = JysClient()
+        summary = client.find_article_for_date(
+            user_id=str(spec["user_id"]),
+            author=str(spec["author"]),
+            subject_name=str(spec["subject_name"]),
+            title_terms=tuple(str(term) for term in spec["title_terms"]),
+            target_date=target_date,
+        )
+        if summary is None:
+            return None
+        article = client.fetch_detail(summary)
+        today_hot = None
+        if job == "limit_review":
+            today_hot = DxxClient().today_hot(target_date)
+            if not today_hot:
+                raise RuntimeError(
+                    f"DXX {target_date.isoformat()} 今日热点为空，停止推送"
+                )
+        return render_article(job, target_date, article, today_hot=today_hot)
 
     subject_id = SUBJECTS[job]
     cls_client = ClsClient()
@@ -59,6 +106,23 @@ def run_job(
     dry_run: bool,
     force: bool,
 ) -> int:
+    if job in GROUPS:
+        results: list[int] = []
+        for member in GROUPS[job]:
+            try:
+                result = run_job(
+                    member,
+                    target_date=target_date,
+                    state_path=state_path,
+                    dry_run=dry_run,
+                    force=force,
+                )
+            except Exception as exc:
+                print(f"{member}: 执行失败，继续扫描其他来源: {exc}", file=sys.stderr)
+                result = 2
+            results.append(result)
+        return 2 if any(result != 0 for result in results) else 0
+
     channels = None
     channel_ids: list[str] = []
     state = DeliveryState(state_path)

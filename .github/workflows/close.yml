@@ -1,12 +1,18 @@
-name: CLS Focus Review
+name: Closing Market Scan
 
 on:
-  schedule:
-    # Backup only: Beijing Monday-Friday 18:30 (UTC 10:30).
-    # The external cron service owns the timely retry windows.
-    - cron: '30 10 * * 1-5'
   workflow_dispatch:
     inputs:
+      job_name:
+        description: "Automatic CLS + JYS + DXX scan or one selected source"
+        required: false
+        default: close_scan
+        type: choice
+        options:
+          - close_scan
+          - focus
+          - limit_review
+          - today_hot
       run_date:
         description: "Beijing date (YYYY-MM-DD); empty means today"
         required: false
@@ -33,7 +39,7 @@ jobs:
   run:
     uses: ./.github/workflows/_run.yml
     with:
-      job_name: focus
+      job_name: ${{ inputs.job_name || 'close_scan' }}
       run_date: ${{ inputs.run_date || '' }}
       dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
       force: ${{ github.event_name == 'workflow_dispatch' && inputs.force || false }}

@@ -58,6 +58,7 @@ class JobTests(unittest.TestCase):
         summary = object()
         article = object()
         hot_items = [{"title": "热点", "keyword": "AI", "heat_raw": "1万"}]
+        calendar_items = [{"date": "2026-07-30", "event": "财经事件"}]
         with patch("finance_bot.jobs.ClsClient") as cls_client, patch(
             "finance_bot.jobs.DxxClient"
         ) as dxx_client, patch(
@@ -66,10 +67,19 @@ class JobTests(unittest.TestCase):
             cls_client.return_value.find_article_for_date.return_value = summary
             cls_client.return_value.fetch_detail.return_value = article
             dxx_client.return_value.today_hot.return_value = hot_items
+            dxx_client.return_value.tomorrow_day_after_calendar.return_value = (
+                date(2026, 7, 31),
+                date(2026, 8, 1),
+                calendar_items,
+            )
             result = build_message("focus", target_date)
         self.assertEqual(result, "message")
         render_article.assert_called_once_with(
-            "focus", target_date, article, today_hot=hot_items
+            "focus",
+            target_date,
+            article,
+            today_hot=hot_items,
+            calendar_items=calendar_items,
         )
 
     def test_limit_review_embeds_today_hot(self):
@@ -77,6 +87,7 @@ class JobTests(unittest.TestCase):
         summary = object()
         article = object()
         hot_items = [{"title": "热点", "keyword": "AI", "heat_raw": "1万"}]
+        calendar_items = [{"date": "2026-07-31", "event": "财经事件"}]
         with patch("finance_bot.jobs.JysClient") as jys_client, patch(
             "finance_bot.jobs.DxxClient"
         ) as dxx_client, patch(
@@ -85,10 +96,19 @@ class JobTests(unittest.TestCase):
             jys_client.return_value.find_article_for_date.return_value = summary
             jys_client.return_value.fetch_detail.return_value = article
             dxx_client.return_value.today_hot.return_value = hot_items
+            dxx_client.return_value.tomorrow_day_after_calendar.return_value = (
+                date(2026, 7, 31),
+                date(2026, 8, 1),
+                calendar_items,
+            )
             result = build_message("limit_review", target_date)
         self.assertEqual(result, "message")
         render_article.assert_called_once_with(
-            "limit_review", target_date, article, today_hot=hot_items
+            "limit_review",
+            target_date,
+            article,
+            today_hot=hot_items,
+            calendar_items=calendar_items,
         )
 
     def test_completed_day_stops_before_fetch(self):

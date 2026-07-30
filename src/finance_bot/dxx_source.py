@@ -36,11 +36,9 @@ class DxxClient:
         ]
         return items
 
-    def two_week_calendar(
-        self, any_date_in_week: date
-    ) -> tuple[date, date, list[dict[str, Any]]]:
-        start = any_date_in_week - timedelta(days=any_date_in_week.weekday())
-        end = start + timedelta(days=13)
+    def calendar_range(
+        self, start: date, end: date
+    ) -> list[dict[str, Any]]:
         section = self._fetch("finance_calendar")
         items: list[dict[str, Any]] = []
         for item in section.get("items", []):
@@ -50,4 +48,18 @@ class DxxClient:
                 continue
             if start <= item_date <= end:
                 items.append(item)
-        return start, end, items
+        return items
+
+    def tomorrow_day_after_calendar(
+        self, target_date: date
+    ) -> tuple[date, date, list[dict[str, Any]]]:
+        start = target_date + timedelta(days=1)
+        end = target_date + timedelta(days=2)
+        return start, end, self.calendar_range(start, end)
+
+    def two_week_calendar(
+        self, any_date_in_week: date
+    ) -> tuple[date, date, list[dict[str, Any]]]:
+        start = any_date_in_week - timedelta(days=any_date_in_week.weekday())
+        end = start + timedelta(days=13)
+        return start, end, self.calendar_range(start, end)

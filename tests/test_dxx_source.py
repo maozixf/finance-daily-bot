@@ -39,6 +39,27 @@ class DxxSourceTests(unittest.TestCase):
             ["second alphabetically", "first alphabetically", "end"],
         )
 
+    @patch("finance_bot.dxx_source.fetch_section")
+    def test_calendar_covers_tomorrow_and_day_after(self, fetch_section):
+        fetch_section.return_value = {
+            "items": [
+                {"date": "2026-07-30", "event": "outside"},
+                {"date": "2026-07-31", "event": "明日第一项"},
+                {"date": "2026-07-31", "event": "明日第二项"},
+                {"date": "2026-08-01", "event": "后天第一项"},
+                {"date": "2026-08-02", "event": "outside"},
+            ]
+        }
+        start, end, items = DxxClient().tomorrow_day_after_calendar(
+            date(2026, 7, 30)
+        )
+        self.assertEqual(start, date(2026, 7, 31))
+        self.assertEqual(end, date(2026, 8, 1))
+        self.assertEqual(
+            [item["event"] for item in items],
+            ["明日第一项", "明日第二项", "后天第一项"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

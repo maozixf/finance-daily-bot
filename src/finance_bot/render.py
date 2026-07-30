@@ -4,7 +4,7 @@ import hashlib
 import html
 import re
 from collections import defaultdict
-from datetime import date
+from datetime import date, timedelta
 from html.parser import HTMLParser
 from typing import Any
 
@@ -279,6 +279,7 @@ def render_article(
     article: ArticleDetail,
     *,
     today_hot: list[dict[str, Any]] | None = None,
+    calendar_items: list[dict[str, Any]] | None = None,
 ) -> Message:
     date_text = target_date.isoformat()
     display_title = (
@@ -307,6 +308,30 @@ def render_article(
                 for index, item in enumerate(today_hot, start=1)
             )
         )
+    if calendar_items is not None:
+        tomorrow = target_date + timedelta(days=1)
+        day_after = target_date + timedelta(days=2)
+        calendar_by_day = {
+            day.isoformat(): [
+                str(item.get("event") or "").strip()
+                for item in calendar_items
+                if str(item.get("date")) == day.isoformat()
+                and str(item.get("event") or "").strip()
+            ]
+            for day in (tomorrow, day_after)
+        }
+        sections.append(
+            f"{tomorrow.isoformat()} 至 {day_after.isoformat()} · 明后天财经日历\n\n"
+            + "\n\n".join(
+                day
+                + "\n"
+                + "\n".join(
+                    f"- {event}"
+                    for event in (calendar_by_day[day] or ["暂无财经事件"])
+                )
+                for day in calendar_by_day
+            )
+        )
     text = "\n\n".join(sections)
 
     markdown_sections = [f"# {headline}"]
@@ -331,6 +356,29 @@ def render_article(
                 f"（热度值：{item.get('heat_raw', '')}）\n\n"
                 f"关键词：**{item.get('keyword', '')}**"
                 for index, item in enumerate(today_hot, start=1)
+            )
+        )
+    if calendar_items is not None:
+        tomorrow = target_date + timedelta(days=1)
+        day_after = target_date + timedelta(days=2)
+        calendar_by_day = {
+            day.isoformat(): [
+                str(item.get("event") or "").strip()
+                for item in calendar_items
+                if str(item.get("date")) == day.isoformat()
+                and str(item.get("event") or "").strip()
+            ]
+            for day in (tomorrow, day_after)
+        }
+        markdown += "\n\n---\n\n" + (
+            f"## {tomorrow.isoformat()} 至 {day_after.isoformat()} · 明后天财经日历\n\n"
+            + "\n\n".join(
+                f"### {day}\n\n"
+                + "\n".join(
+                    f"- {event}"
+                    for event in (calendar_by_day[day] or ["暂无财经事件"])
+                )
+                for day in calendar_by_day
             )
         )
 
@@ -368,6 +416,33 @@ def render_article(
             + "</strong></p>"
             for index, item in enumerate(today_hot, start=1)
         )
+    if calendar_items is not None:
+        tomorrow = target_date + timedelta(days=1)
+        day_after = target_date + timedelta(days=2)
+        calendar_by_day = {
+            day.isoformat(): [
+                str(item.get("event") or "").strip()
+                for item in calendar_items
+                if str(item.get("date")) == day.isoformat()
+                and str(item.get("event") or "").strip()
+            ]
+            for day in (tomorrow, day_after)
+        }
+        html_parts.append(
+            f'<hr />{_styled_tag("h2")}'
+            f"{html.escape(tomorrow.isoformat())} 至 {html.escape(day_after.isoformat())}"
+            " · 明后天财经日历</h2>"
+        )
+        for day, events in calendar_by_day.items():
+            html_parts.append(
+                f'{_styled_tag("h3")}{html.escape(day)}</h3>'
+                f'{_styled_tag("ul")}'
+                + "".join(
+                    f'{_styled_tag("li")}{html.escape(event)}</li>'
+                    for event in (events or ["暂无财经事件"])
+                )
+                + "</ul>"
+            )
     html_body = _email_document(headline, "".join(html_parts))
     key = f"{feed}:{target_date.isoformat()}"
     return Message(

@@ -42,6 +42,17 @@ GROUPS = {
 }
 
 
+def _close_dxx_context(
+    target_date: date,
+) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+    client = DxxClient()
+    today_hot = client.today_hot(target_date)
+    if not today_hot:
+        raise RuntimeError(f"DXX {target_date.isoformat()} 今日热点为空，停止推送")
+    _, _, calendar_items = client.tomorrow_day_after_calendar(target_date)
+    return today_hot, calendar_items
+
+
 def build_message(job: str, target_date: date) -> Message | None:
     if job == "today_hot":
         items = DxxClient().today_hot(target_date)
@@ -69,13 +80,16 @@ def build_message(job: str, target_date: date) -> Message | None:
             return None
         article = client.fetch_detail(summary)
         today_hot = None
+        calendar_items = None
         if job == "limit_review":
-            today_hot = DxxClient().today_hot(target_date)
-            if not today_hot:
-                raise RuntimeError(
-                    f"DXX {target_date.isoformat()} 今日热点为空，停止推送"
-                )
-        return render_article(job, target_date, article, today_hot=today_hot)
+            today_hot, calendar_items = _close_dxx_context(target_date)
+        return render_article(
+            job,
+            target_date,
+            article,
+            today_hot=today_hot,
+            calendar_items=calendar_items,
+        )
 
     subject_id = SUBJECTS[job]
     cls_client = ClsClient()
@@ -84,11 +98,22 @@ def build_message(job: str, target_date: date) -> Message | None:
         return None
     article = cls_client.fetch_detail(summary)
     today_hot = None
-    if job in {"focus", "close"}:
+    calendar_items = None
+    if job == "focus":
+        today_hot, calendar_items = _close_dxx_context(target_date)
+    elif job == "close":
         today_hot = DxxClient().today_hot(target_date)
         if not today_hot:
-            raise RuntimeError(f"DXX {target_date.isoformat()} 今日热点为空，停止推送")
-    return render_article(job, target_date, article, today_hot=today_hot)
+            raise RuntimeError(
+                f"DXX {target_date.isoformat()} 今日热点为空，停止推送"
+            )
+    return render_article(
+        job,
+        target_date,
+        article,
+        today_hot=today_hot,
+        calendar_items=calendar_items,
+    )
 
 
 def expected_key(job: str, target_date: date) -> str:

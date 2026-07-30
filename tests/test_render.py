@@ -31,6 +31,11 @@ class RenderTests(unittest.TestCase):
             article.published_at.date(),
             article,
             today_hot=[{"title": "热点", "keyword": "AI", "heat_raw": "1万"}],
+            calendar_items=[
+                {"date": "2026-07-29", "event": "明日第一项"},
+                {"date": "2026-07-29", "event": "明日第二项"},
+                {"date": "2026-07-30", "event": "后天第一项"},
+            ],
         )
         self.assertIn("![走势图](https://example/body.png)", message.markdown)
         self.assertIn('<img src="https://example/body.png"', message.html)
@@ -51,6 +56,17 @@ class RenderTests(unittest.TestCase):
         )
         self.assertIn("2026-07-28 · 今日热点", message.markdown)
         self.assertIn("热度值：1万", message.markdown)
+        self.assertIn("明后天财经日历", message.markdown)
+        self.assertIn("明日第一项", message.markdown)
+        self.assertIn("后天第一项", message.markdown)
+        self.assertLess(
+            message.markdown.index("2026-07-28 · 今日热点"),
+            message.markdown.index("明后天财经日历"),
+        )
+        self.assertLess(
+            message.markdown.index("明日第一项"),
+            message.markdown.index("明日第二项"),
+        )
 
     def test_calendar_preserves_source_date_and_event_order(self):
         message = render_calendar(

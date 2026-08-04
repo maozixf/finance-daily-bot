@@ -369,6 +369,21 @@
       "source_id": "1ht0xfz63sl",
       "source_url": "https://www.jiuyangongshe.com/a/1ht0xfz63sl",
       "updated_at": "2026-08-04T08:00:49.042884+08:00"
+    },
+    "limit_review:2026-08-04": {
+      "message_digest": "eb6f34130670c8ea1a08c7b53cdca21bcba6506536f4a32f0036928b2ecd4736",
+      "channels": {
+        "mail-main": {
+          "status": "failed",
+          "completed_parts": [],
+          "parts_total": 1,
+          "updated_at": "2026-08-04T17:06:06.918446+08:00",
+          "error": "Request Error"
+        }
+      },
+      "source_id": "2z6z2803haj",
+      "source_url": "https://www.jiuyangongshe.com/a/2z6z2803haj",
+      "updated_at": "2026-08-04T17:06:06.918446+08:00"
     }
   }
 }

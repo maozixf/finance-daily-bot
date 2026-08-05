@@ -1,5 +1,14 @@
 $ErrorActionPreference = "Stop"
 
+# Keep the script ASCII-only so Windows PowerShell 5.1 cannot decode the
+# default Chinese sender name with the active ANSI code page.
+$defaultSenderName = -join @(
+    [char]0x8D22,
+    [char]0x7ECF,
+    [char]0x65E5,
+    [char]0x62A5
+)
+
 $repository = "maozixf/finance-daily-bot"
 $gh = "C:\Program Files\GitHub CLI\gh.exe"
 if (-not (Test-Path -LiteralPath $gh)) {
@@ -41,8 +50,8 @@ if ($provider -notin @("resend", "brevo")) {
 
 $apiKey = Read-RequiredSecret "API key (hidden)"
 $fromEmail = Read-RequiredText "Verified sender email"
-$fromName = Read-Host "Sender display name [财经日报]"
-if ([string]::IsNullOrWhiteSpace($fromName)) { $fromName = "财经日报" }
+$fromName = Read-Host "Sender display name [$defaultSenderName]"
+if ([string]::IsNullOrWhiteSpace($fromName)) { $fromName = $defaultSenderName }
 $recipients = Read-RequiredText "Recipient email address(es), comma-separated"
 
 $config = @{

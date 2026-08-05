@@ -458,19 +458,17 @@
     "focus:2026-08-05": {
       "message_digest": "80a07a02019a68920db2955dd2936ecdb02a02308a4dd9c3c9af3e077fb8d589",
       "channels": {
-        "mail-main": {
-          "status": "success",
-          "completed_parts": [
-            0
-          ],
+        "mail-api-main": {
+          "status": "failed",
+          "completed_parts": [],
           "parts_total": 1,
-          "updated_at": "2026-08-05T18:36:06.532092+08:00",
-          "error": null
+          "updated_at": "2026-08-05T19:04:19.810981+08:00",
+          "error": "邮件 API 401: Key not found"
         }
       },
       "source_id": "2446407",
       "source_url": "https://www.cls.cn/detail/2446407",
-      "updated_at": "2026-08-05T18:36:06.532092+08:00"
+      "updated_at": "2026-08-05T19:04:19.810981+08:00"
     }
   }
 }

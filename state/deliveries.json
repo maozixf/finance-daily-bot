@@ -454,13 +454,13 @@
           "status": "failed",
           "completed_parts": [],
           "parts_total": 1,
-          "updated_at": "2026-08-05T19:06:00.650756+08:00",
-          "error": "邮件 API 401: Key not found"
+          "updated_at": "2026-08-05T19:35:40.277494+08:00",
+          "error": "邮件 API 401: We have detected you are using an unrecognised IP address 40.76.191.161. If you performed this action make sure to add the new IP address in this link: https://app.brevo.com/security/authorised_ips"
         }
       },
       "source_id": "4ely5c8499c",
       "source_url": "https://www.jiuyangongshe.com/a/4ely5c8499c",
-      "updated_at": "2026-08-05T19:06:00.650756+08:00"
+      "updated_at": "2026-08-05T19:35:40.277494+08:00"
     },
     "focus:2026-08-05": {
       "message_digest": "80a07a02019a68920db2955dd2936ecdb02a02308a4dd9c3c9af3e077fb8d589",
@@ -469,13 +469,13 @@
           "status": "failed",
           "completed_parts": [],
           "parts_total": 1,
-          "updated_at": "2026-08-05T19:31:45.399052+08:00",
-          "error": "邮件 API 401: We have detected you are using an unrecognised IP address 68.220.61.165. If you performed this action make sure to add the new IP address in this link: https://app.brevo.com/security/authorised_ips"
+          "updated_at": "2026-08-05T19:35:30.114930+08:00",
+          "error": "邮件 API 401: We have detected you are using an unrecognised IP address 40.76.191.161. If you performed this action make sure to add the new IP address in this link: https://app.brevo.com/security/authorised_ips"
         }
       },
       "source_id": "2446407",
       "source_url": "https://www.cls.cn/detail/2446407",
-      "updated_at": "2026-08-05T19:31:45.399052+08:00"
+      "updated_at": "2026-08-05T19:35:30.114930+08:00"
     }
   }
 }

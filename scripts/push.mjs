@@ -72,6 +72,102 @@ function cleanResult(result) {
   };
 }
 
+function asStringList(value) {
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => asStringList(item));
+  }
+  if (typeof value !== "string") return [];
+  return value
+    .split(/[;,\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function getEmailApiConfig(channel) {
+  const config = channel.config && typeof channel.config === "object"
+    ? channel.config
+    : {};
+  const sender = config.sender && typeof config.sender === "object"
+    ? config.sender
+    : {};
+  const recipients = config.to ?? config.recipients ?? config.recipient;
+  const provider = String(
+    channel.provider || config.provider || channel.name || ""
+  ).toLowerCase();
+  return {
+    provider,
+    apiKey: String(config.api_key || config.apiKey || "").trim(),
+    fromEmail: String(
+      config.from_email || config.fromEmail || sender.email || ""
+    ).trim(),
+    fromName: String(
+      config.from_name || config.fromName || sender.name || ""
+    ).trim(),
+    to: asStringList(recipients),
+    endpoint: String(config.endpoint || "").trim(),
+  };
+}
+
+async function sendEmailApi(channel, payload) {
+  const config = getEmailApiConfig(channel);
+  if (!config.apiKey) throw new Error("邮件 API 缺少 api_key");
+  if (!config.fromEmail) throw new Error("邮件 API 缺少 from_email");
+  if (!config.to.length) throw new Error("邮件 API 缺少收件人 to");
+
+  const from = config.fromName
+    ? `${config.fromName} <${config.fromEmail}>`
+    : config.fromEmail;
+  const subject = String(payload.title || "财经日报");
+  const html = String(payload.html || payload.text || "");
+  const text = String(payload.text || "");
+  let url;
+  let body;
+  let headers = { "Content-Type": "application/json" };
+
+  if (config.provider === "resend") {
+    url = config.endpoint || "https://api.resend.com/emails";
+    headers.Authorization = `Bearer ${config.apiKey}`;
+    body = { from, to: config.to, subject, html, text };
+  } else if (config.provider === "brevo" || config.provider === "sendinblue") {
+    url = config.endpoint || "https://api.brevo.com/v3/smtp/email";
+    headers["api-key"] = config.apiKey;
+    body = {
+      sender: { email: config.fromEmail, ...(config.fromName ? { name: config.fromName } : {}) },
+      to: config.to.map((email) => ({ email })),
+      subject,
+      htmlContent: html,
+      textContent: text,
+    };
+  } else {
+    throw new Error(`不支持的邮件 API provider: ${config.provider || "空"}`);
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+  });
+  const responseText = await response.text();
+  if (!response.ok) {
+    let detail = responseText;
+    try {
+      const parsed = JSON.parse(responseText);
+      detail = parsed.message || parsed.error || parsed.name || responseText;
+    } catch {
+      // Keep the plain response for providers that do not return JSON.
+    }
+    return {
+      status: response.status,
+      statusText: `邮件 API ${response.status}: ${String(detail).slice(0, 500)}`,
+    };
+  }
+  return {
+    status: response.status,
+    statusText: "Success",
+    extraMessage: responseText.slice(0, 1000),
+  };
+}
+
 async function sendChannel(channel, payload) {
   const id = String(channel.id || "");
   const name = String(channel.name || "");
@@ -96,9 +192,14 @@ async function sendChannel(channel, payload) {
     if (completed.has(index)) continue;
     const title =
       parts.length > 1 ? `${payload.title} (${index + 1}/${parts.length})` : payload.title;
-    const api = new PushApi([{ name, config: channel.config }]);
-    const response = await api.send({ message: parts[index], title, type: format });
-    const result = cleanResult(response[0]?.result);
+    let result;
+    if (["resend", "brevo", "sendinblue"].includes(name.toLowerCase()) || channel.provider) {
+      result = await sendEmailApi(channel, { ...payload, title, [format]: parts[index] });
+    } else {
+      const api = new PushApi([{ name, config: channel.config }]);
+      const response = await api.send({ message: parts[index], title, type: format });
+      result = cleanResult(response[0]?.result);
+    }
     details.push({ index, ...result });
     if (result.status >= 200 && result.status < 300) {
       completed.add(index);

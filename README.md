@@ -73,6 +73,35 @@ Actions 手动运行页面也可以选择单独来源。
 `id` 是机器人内部的唯一投递目标标识；`name`、`config` 遵循
 `all-pusher-api` 的配置。`format` 支持 `text`、`markdown`、`html`。
 
+### 邮件 API 渠道
+
+邮件 API 不经过 163/QQ/Gmail SMTP 登录，适合 GitHub Actions。当前支持
+`Resend` 和 `Brevo`，发件地址必须先在对应平台验证。
+
+```json
+{
+  "channels": [
+    {
+      "id": "mail-api-main",
+      "name": "Brevo",
+      "provider": "brevo",
+      "format": "html",
+      "max_length": 0,
+      "config": {
+        "api_key": "API key",
+        "from_email": "verified@example.com",
+        "from_name": "财经日报",
+        "to": ["one@example.com", "two@example.com"]
+      }
+    }
+  ]
+}
+```
+
+也可以把 `name`/`provider` 改成 `Resend`/`resend`。本地 PowerShell 可运行
+`scripts/configure-email-api.ps1`，它只把配置写入 GitHub Secret
+`ALL_PUSH_CONFIG`，不会把 API key 写入文件。
+
 ## 消息排版和长消息
 
 - 不推送栏目封面或文章封面；正文内嵌图片按原位置保留。

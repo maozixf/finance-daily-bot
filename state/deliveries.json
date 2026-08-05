@@ -469,13 +469,13 @@
           "status": "failed",
           "completed_parts": [],
           "parts_total": 1,
-          "updated_at": "2026-08-05T19:05:55.372648+08:00",
-          "error": "邮件 API 401: Key not found"
+          "updated_at": "2026-08-05T19:31:45.399052+08:00",
+          "error": "邮件 API 401: We have detected you are using an unrecognised IP address 68.220.61.165. If you performed this action make sure to add the new IP address in this link: https://app.brevo.com/security/authorised_ips"
         }
       },
       "source_id": "2446407",
       "source_url": "https://www.cls.cn/detail/2446407",
-      "updated_at": "2026-08-05T19:05:55.372648+08:00"
+      "updated_at": "2026-08-05T19:31:45.399052+08:00"
     }
   }
 }

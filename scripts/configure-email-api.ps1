@@ -48,7 +48,10 @@ if ($provider -notin @("resend", "brevo")) {
     throw "Provider must be Resend or Brevo"
 }
 
-$apiKey = Read-RequiredSecret "API key (hidden)"
+$apiKey = (Read-RequiredSecret "API key (hidden)").Trim()
+if ($provider -eq "brevo" -and $apiKey -notmatch '^xkeysib-') {
+    throw "Brevo API key 格式不对：请使用普通 API key，通常以 xkeysib- 开头；不要填 SMTP key 或 MCP key。"
+}
 $fromEmail = Read-RequiredText "Verified sender email"
 $fromName = Read-Host "Sender display name [$defaultSenderName]"
 if ([string]::IsNullOrWhiteSpace($fromName)) { $fromName = $defaultSenderName }

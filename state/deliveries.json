@@ -449,11 +449,18 @@
           "parts_total": 1,
           "updated_at": "2026-08-05T17:36:18.174616+08:00",
           "error": null
+        },
+        "mail-api-main": {
+          "status": "failed",
+          "completed_parts": [],
+          "parts_total": 1,
+          "updated_at": "2026-08-05T19:06:00.650756+08:00",
+          "error": "邮件 API 401: Key not found"
         }
       },
       "source_id": "4ely5c8499c",
       "source_url": "https://www.jiuyangongshe.com/a/4ely5c8499c",
-      "updated_at": "2026-08-05T17:36:18.174616+08:00"
+      "updated_at": "2026-08-05T19:06:00.650756+08:00"
     },
     "focus:2026-08-05": {
       "message_digest": "80a07a02019a68920db2955dd2936ecdb02a02308a4dd9c3c9af3e077fb8d589",
@@ -462,13 +469,13 @@
           "status": "failed",
           "completed_parts": [],
           "parts_total": 1,
-          "updated_at": "2026-08-05T19:04:19.810981+08:00",
+          "updated_at": "2026-08-05T19:05:55.372648+08:00",
           "error": "邮件 API 401: Key not found"
         }
       },
       "source_id": "2446407",
       "source_url": "https://www.cls.cn/detail/2446407",
-      "updated_at": "2026-08-05T19:04:19.810981+08:00"
+      "updated_at": "2026-08-05T19:05:55.372648+08:00"
     }
   }
 }

@@ -633,6 +633,23 @@
       "source_id": "2449266",
       "source_url": "https://www.cls.cn/detail/2449266",
       "updated_at": "2026-08-09T15:05:27.982595+08:00"
+    },
+    "weekly:2026-08-10": {
+      "message_digest": "5e10ca23c174ec58dee212c5f6977530c778f5f5f1505f43667c5f616271c3e4",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-08-10T07:05:26.125402+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2026-08-10_2026-08-23",
+      "source_url": "https://duanxianxia.com/web/hotnews/iframe",
+      "updated_at": "2026-08-10T07:05:26.125402+08:00"
     }
   }
 }

@@ -1262,6 +1262,23 @@
       "source_id": "2z7rbrj7xu5",
       "source_url": "https://www.jiuyangongshe.com/a/2z7rbrj7xu5",
       "updated_at": "2026-08-20T17:05:36.025210+08:00"
+    },
+    "focus:2026-08-20": {
+      "message_digest": "87855bca3c2ff43b2d54cd60dc9a8ad3419fca3d1cdd471ebdbe43b2ab89e45f",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-08-20T17:35:55.882421+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2459577",
+      "source_url": "https://www.cls.cn/detail/2459577",
+      "updated_at": "2026-08-20T17:35:55.882421+08:00"
     }
   }
 }

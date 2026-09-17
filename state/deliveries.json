@@ -2605,6 +2605,23 @@
       "source_id": "20b4g7vxbty",
       "source_url": "https://www.jiuyangongshe.com/a/20b4g7vxbty",
       "updated_at": "2026-09-17T07:30:35.418912+08:00"
+    },
+    "limit_review:2026-09-17": {
+      "message_digest": "d4ae1912f64c30934d23160397e04b63e4dbe87a5d67111d99657fbae34a54ad",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-09-17T16:35:48.520735+08:00",
+          "error": null
+        }
+      },
+      "source_id": "1hv5yglar0h",
+      "source_url": "https://www.jiuyangongshe.com/a/1hv5yglar0h",
+      "updated_at": "2026-09-17T16:35:48.520735+08:00"
     }
   }
 }

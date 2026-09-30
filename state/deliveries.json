@@ -3200,6 +3200,23 @@
       "source_id": "2496354",
       "source_url": "https://www.cls.cn/detail/2496354",
       "updated_at": "2026-09-30T17:35:52.715518+08:00"
+    },
+    "morning:2026-10-01": {
+      "message_digest": "bbf1ee9703a759e0bc354510758bccd36b8065d4e4a5b603f8e92201af6e6377",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-10-01T07:15:27.146365+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2496760",
+      "source_url": "https://www.cls.cn/detail/2496760",
+      "updated_at": "2026-10-01T07:15:27.146365+08:00"
     }
   }
 }

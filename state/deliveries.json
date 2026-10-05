@@ -3268,6 +3268,23 @@
       "source_id": "2497778",
       "source_url": "https://www.cls.cn/detail/2497778",
       "updated_at": "2026-10-05T07:15:25.130462+08:00"
+    },
+    "morning:2026-10-06": {
+      "message_digest": "1ef0de68def4fc1c761cf592b3a8bbcf3bb1054246afb7b6af397ae29b32ad8f",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-10-06T07:30:33.010134+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2498089",
+      "source_url": "https://www.cls.cn/detail/2498089",
+      "updated_at": "2026-10-06T07:30:33.010134+08:00"
     }
   }
 }

@@ -4186,6 +4186,23 @@
       "source_id": "2517219",
       "source_url": "https://www.cls.cn/detail/2517219",
       "updated_at": "2026-10-28T07:15:26.258867+08:00"
+    },
+    "pre_market:2026-10-28": {
+      "message_digest": "36c2143e3402c7f6bbc4942ffe3cc613fd740683f436e5c444de4741da4f4bd0",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-10-28T08:00:48.084069+08:00",
+          "error": null
+        }
+      },
+      "source_id": "jz6f47xqq1",
+      "source_url": "https://www.jiuyangongshe.com/a/jz6f47xqq1",
+      "updated_at": "2026-10-28T08:00:48.084069+08:00"
     }
   }
 }

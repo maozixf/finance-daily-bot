@@ -4560,6 +4560,23 @@
       "source_id": "2526309",
       "source_url": "https://www.cls.cn/detail/2526309",
       "updated_at": "2026-11-05T17:35:41.734029+08:00"
+    },
+    "morning:2026-11-06": {
+      "message_digest": "b2b9e089ee5ce3fd53d7bf781321745e7b25d098e433a8852e0c5f436964b9dc",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-11-06T07:15:29.503107+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2526813",
+      "source_url": "https://www.cls.cn/detail/2526813",
+      "updated_at": "2026-11-06T07:15:29.503107+08:00"
     }
   }
 }

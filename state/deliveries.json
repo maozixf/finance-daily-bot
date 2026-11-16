@@ -5053,6 +5053,23 @@
       "source_id": "2535595",
       "source_url": "https://www.cls.cn/detail/2535595",
       "updated_at": "2026-11-16T17:36:22.327178+08:00"
+    },
+    "morning:2026-11-17": {
+      "message_digest": "d9a5642bd70a3bec1431c3360dd330d7f854f3fae9da9b9b59f54bebb6c5324c",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-11-17T07:30:33.744830+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2536060",
+      "source_url": "https://www.cls.cn/detail/2536060",
+      "updated_at": "2026-11-17T07:30:33.744830+08:00"
     }
   }
 }

@@ -5461,6 +5461,23 @@
       "source_id": "3yaay246bwn",
       "source_url": "https://www.jiuyangongshe.com/a/3yaay246bwn",
       "updated_at": "2026-11-24T07:45:29.299674+08:00"
+    },
+    "limit_review:2026-11-24": {
+      "message_digest": "4f378d6adb719835f7df675b0a7b7e5d96f15dae4aa5ac78d4783d385775e337",
+      "channels": {
+        "mail-api-main": {
+          "status": "success",
+          "completed_parts": [
+            0
+          ],
+          "parts_total": 1,
+          "updated_at": "2026-11-24T16:05:57.597536+08:00",
+          "error": null
+        }
+      },
+      "source_id": "2zcd7knnyja",
+      "source_url": "https://www.jiuyangongshe.com/a/2zcd7knnyja",
+      "updated_at": "2026-11-24T16:05:57.597536+08:00"
     }
   }
 }
